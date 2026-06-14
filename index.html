@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Experience Map | Leadership Workshop</title>
+<style>
+  :root {
+    --navy: #002D40;
+    --blue: #63B6D2;
+    --lime: #C6CD23;
+    --gray: #DBDBDB;
+    --orange: #F5B64C;
+    --white: #ffffff;
+    --text-dark: #002D40;
+    --text-mid: #556b7a;
+    --surface: #f4f6f9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif; background: var(--surface); color: var(--text-dark); min-height: 100vh; }
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ══ INTRO ══ */
+  #screen-intro { background: var(--navy); align-items: center; justify-content: center; padding: 60px 24px; text-align: center; }
+  .intro-badge { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--blue); margin-bottom: 40px; font-weight: 700; }
+  .intro-eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--lime); margin-bottom: 14px; font-weight: 700; }
+  .intro-title { font-size: clamp(26px, 4vw, 46px); color: var(--white); font-weight: 800; line-height: 1.15; margin-bottom: 10px; max-width: 680px; }
+  .intro-tagline { font-size: 18px; color: var(--blue); font-style: italic; margin-bottom: 36px; }
+  .intro-divider { width: 56px; height: 3px; background: var(--lime); margin: 0 auto 36px; border-radius: 2px; }
+  .intro-pullquote { max-width: 540px; background: rgba(99,182,210,0.12); border-left: 4px solid var(--blue); border-radius: 0 10px 10px 0; padding: 20px 28px; margin: 0 auto 28px; color: var(--blue); font-size: 17px; font-style: italic; line-height: 1.6; text-align: left; }
+  .intro-body { max-width: 620px; color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.8; margin-bottom: 16px; }
+  .intro-body strong { color: rgba(255,255,255,0.95); }
+  .intro-note { max-width: 580px; color: rgba(255,255,255,0.72); font-size: 16px; line-height: 1.75; margin: 0 auto 44px; }
+  .btn-begin { background: var(--orange); color: var(--navy); border: none; padding: 18px 52px; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 800; font-family: inherit; letter-spacing: 1px; text-transform: uppercase; transition: all 0.2s; box-shadow: 0 4px 20px rgba(245,182,76,0.35); }
+  .btn-begin:hover { background: #e8a73a; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(245,182,76,0.45); }
+  .intro-meta { margin-top: 24px; color: rgba(255,255,255,0.3); font-size: 13px; }
+
+  /* ══ WORKSHOP ══ */
+  #screen-workshop { flex-direction: row; }
+  .sidebar { width: 268px; min-width: 268px; background: var(--navy); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .sidebar-brand { padding: 22px 22px 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .sb-label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--blue); font-weight: 700; margin-bottom: 4px; }
+  .sb-title { font-size: 13px; color: rgba(255,255,255,0.82); font-weight: 600; line-height: 1.3; }
+  .sidebar-prog-wrap { padding: 14px 22px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .sp-label { font-size: 10px; color: rgba(255,255,255,0.38); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 7px; }
+  .sp-bar { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+  .sp-fill { height: 100%; background: var(--lime); border-radius: 2px; transition: width 0.5s ease; }
+  .sp-pct { font-size: 11px; color: var(--lime); margin-top: 5px; font-weight: 700; }
+  .tp-nav { padding: 10px; flex: 1; }
+  .tp-item { display: flex; align-items: flex-start; padding: 9px 11px; border-radius: 8px; margin-bottom: 2px; gap: 10px; border-left: 3px solid transparent; }
+  .tp-item.tp-current { background: rgba(99,182,210,0.14); border-left-color: var(--blue); }
+  .tp-item.tp-done { opacity: 0.62; cursor: pointer; transition: opacity 0.15s, background 0.15s, border-left-color 0.15s; }
+  .tp-item.tp-done:hover { opacity: 1; background: rgba(99,182,210,0.1); border-left-color: rgba(99,182,210,0.5); }
+  .tp-item.tp-reviewing { background: rgba(245,182,76,0.12) !important; border-left-color: var(--orange) !important; opacity: 1 !important; }
+  .tp-item.tp-reviewing .tp-item-name { color: rgba(255,255,255,0.9) !important; font-weight: 600 !important; }
+  .tp-item.tp-reviewing .tp-badge { background: var(--orange) !important; color: var(--navy) !important; }
+  .tp-badge { width: 24px; height: 24px; min-width: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.3); margin-top: 1px; }
+  .tp-item.tp-current .tp-badge { background: var(--blue); color: white; }
+  .tp-item.tp-done .tp-badge { background: var(--lime); color: var(--navy); }
+  .tp-item-name { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.35; }
+  .tp-item.tp-current .tp-item-name { color: rgba(255,255,255,0.95); font-weight: 600; }
+  .tp-item.tp-done .tp-item-name { color: rgba(255,255,255,0.5); }
+  .tp-subprog { font-size: 10px; color: var(--blue); margin-top: 2px; opacity: 0.85; }
+
+  /* Main */
+  .main-content { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+  /* Topbar */
+  .topbar { background: white; padding: 16px 36px 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--gray); position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 6px rgba(0,0,0,0.05); gap: 16px; }
+  .topbar-left { display: flex; align-items: center; gap: 14px; }
+  .home-btn { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: var(--surface); border: 1.5px solid var(--gray); cursor: pointer; flex-shrink: 0; transition: all 0.2s; color: var(--text-mid); }
+  .home-btn:hover { background: var(--navy); border-color: var(--navy); color: white; }
+  .tb-tp { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--blue); font-weight: 700; margin-bottom: 2px; }
+  .tb-title { font-size: 18px; font-weight: 800; color: var(--navy); line-height: 1.2; }
+  .topbar-right { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; flex-shrink: 0; }
+  .tb-sub-lbl { font-size: 11px; color: var(--text-mid); text-align: right; }
+  .step-dots { display: flex; gap: 6px; align-items: center; }
+  .sd { width: 9px; height: 9px; border-radius: 50%; background: var(--gray); transition: all 0.25s; }
+  .sd.sd-active { background: var(--orange); width: 22px; border-radius: 4px; }
+  .sd.sd-done { background: var(--lime); }
+
+  /* Question area */
+  .q-area { flex: 1; padding: 36px 52px 60px; overflow-y: auto; }
+  .q-area-inner { max-width: 820px; margin: 0 auto; }
+
+  /* Subcat pills */
+  .subcat-strip { display: flex; gap: 8px; margin-bottom: 22px; flex-wrap: wrap; }
+  .sc-pill { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1.5px solid var(--gray); color: var(--text-mid); background: white; white-space: nowrap; }
+  .sc-pill.sc-done { background: rgba(198,205,35,0.12); border-color: rgba(198,205,35,0.5); color: #5a6600; }
+  .sc-pill.sc-active { background: var(--navy); border-color: var(--navy); color: white; }
+
+  /* Context / framing card */
+  .framing-card { background: white; border-radius: 10px; padding: 20px 26px; margin-bottom: 20px; border-left: 4px solid var(--blue); box-shadow: 0 1px 8px rgba(0,45,64,0.07); }
+  .fc-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--blue); margin-bottom: 6px; }
+  .fc-q { font-size: 14px; font-style: italic; color: var(--navy); line-height: 1.6; }
+
+  /* Question card */
+  .q-card { background: white; border-radius: 12px; padding: 40px 44px; box-shadow: 0 2px 14px rgba(0,45,64,0.08); }
+  .qc-subcat-label { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-mid); margin-bottom: 6px; }
+  .qc-area-title { font-size: 20px; font-weight: 800; color: var(--navy); margin-bottom: 18px; padding-bottom: 16px; border-bottom: 2px solid var(--surface); }
+
+  /* Blue context statement */
+  .area-context { background: rgba(99,182,210,0.09); border-left: 3px solid var(--blue); border-radius: 0 8px 8px 0; padding: 16px 20px; margin-bottom: 28px; color: #1a5f78; font-size: 14.5px; line-height: 1.7; }
+  .ac-headline { font-weight: 800; font-size: 15.5px; color: var(--navy); margin-bottom: 9px; line-height: 1.35; }
+  .ac-body { font-size: 14.5px; color: #1a5f78; line-height: 1.7; }
+  /* TP summary on rating page */
+  .tp-summary-box { background: rgba(0,45,64,0.05); border-left: 3px solid var(--navy); border-radius: 0 8px 8px 0; padding: 16px 20px; margin-bottom: 24px; color: var(--navy); font-size: 14px; line-height: 1.75; font-style: italic; }
+
+  .q-num { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 10px; }
+  .q-text { font-size: 21px; font-weight: 700; color: var(--navy); line-height: 1.38; margin-bottom: 24px; }
+  .q-hint { font-size: 13.5px; color: var(--text-mid); line-height: 1.65; margin-bottom: 22px; padding: 14px 18px; background: rgba(198,205,35,0.07); border-radius: 8px; border-left: 3px solid var(--lime); }
+  textarea.q-input { width: 100%; min-height: 148px; padding: 17px 19px; border: 2px solid var(--gray); border-radius: 10px; font-size: 15px; font-family: inherit; color: var(--text-dark); resize: vertical; transition: border-color 0.2s, box-shadow 0.2s; line-height: 1.65; background: #fafbfc; }
+  textarea.q-input:focus { outline: none; border-color: var(--blue); background: white; box-shadow: 0 0 0 4px rgba(99,182,210,0.11); }
+  textarea.q-input::placeholder { color: #aab8c0; }
+
+  /* Q3 summary (overall commitment phase) */
+  .q3-summary { margin-bottom: 26px; }
+  .q3-sum-header { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid var(--surface); }
+  .q3-sum-header span { color: var(--text-mid); font-weight: 400; }
+  .q3-item { display: flex; gap: 14px; margin-bottom: 12px; padding: 13px 16px; background: var(--surface); border-radius: 9px; border-left: 3px solid var(--lime); }
+  .q3-item-num { font-size: 11px; font-weight: 800; color: var(--lime); background: var(--navy); border-radius: 50%; width: 22px; height: 22px; min-width: 22px; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .q3-area-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-mid); margin-bottom: 4px; }
+  .q3-answer { font-size: 14px; color: var(--text-dark); line-height: 1.6; white-space: pre-wrap; }
+  .q3-answer.empty { color: #b0bec5; font-style: italic; }
+  .q3-divider { height: 1px; background: var(--gray); margin: 24px 0; }
+  .overall-q-intro { font-size: 11px; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+
+  /* Rating */
+  .rating-section { display: none; }
+  .rating-intro { font-size: 14px; color: var(--text-mid); margin-bottom: 20px; line-height: 1.55; }
+  .rating-opts { display: flex; flex-direction: column; gap: 13px; }
+  .r-btn { display: flex; align-items: center; gap: 18px; padding: 20px 26px; border: 2px solid var(--gray); border-radius: 12px; cursor: pointer; transition: all 0.2s; background: white; text-align: left; width: 100%; font-family: inherit; }
+  .r-btn:hover { border-color: var(--blue); background: rgba(99,182,210,0.04); transform: translateX(4px); }
+  .r-btn.r-sel { border-color: var(--orange); background: rgba(245,182,76,0.07); box-shadow: 0 0 0 3px rgba(245,182,76,0.18); }
+  .r-icon { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 21px; flex-shrink: 0; }
+  .r-advanced .r-icon { background: rgba(198,205,35,0.18); }
+  .r-proficient .r-icon { background: rgba(99,182,210,0.18); }
+  .r-developing .r-icon { background: rgba(245,182,76,0.18); }
+  .r-label { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+  .r-desc { font-size: 13px; color: var(--text-mid); line-height: 1.4; }
+
+  /* Nav */
+  .nav-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; padding-top: 22px; border-top: 1px solid #edf0f3; }
+  .btn-back { background: transparent; border: 1.5px solid var(--gray); color: var(--text-mid); padding: 11px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; font-family: inherit; transition: all 0.2s; font-weight: 500; }
+  .btn-back:hover { border-color: var(--navy); color: var(--navy); }
+  .btn-return { background: rgba(245,182,76,0.12); color: #b8720a; border: 1.5px solid rgba(245,182,76,0.45); padding: 7px 14px; border-radius: 7px; cursor: pointer; font-size: 12px; font-weight: 700; font-family: inherit; transition: all 0.2s; white-space: nowrap; display: none; }
+  .btn-return:hover { background: rgba(245,182,76,0.22); border-color: var(--orange); }
+  .btn-next { background: var(--orange); color: var(--navy); border: none; padding: 13px 34px; border-radius: 9px; cursor: pointer; font-size: 14px; font-weight: 800; font-family: inherit; letter-spacing: 0.8px; text-transform: uppercase; transition: all 0.2s; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 10px rgba(245,182,76,0.3); }
+  .btn-next:hover:not(:disabled) { background: #e8a33a; transform: translateY(-1px); box-shadow: 0 5px 18px rgba(245,182,76,0.45); }
+  .btn-next:disabled { opacity: 0.38; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* ══ EXPORT ══ */
+  #screen-export { flex-direction: column; background: var(--surface); }
+  .exp-header { background: var(--navy); padding: 32px 56px; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .exp-eyebrow { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--lime); font-weight: 700; margin-bottom: 8px; }
+  .exp-header h1 { font-size: 28px; color: white; font-weight: 800; }
+  .exp-header p { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 5px; }
+  .exp-btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-exp { padding: 11px 22px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; font-family: inherit; transition: all 0.2s; border: none; display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+  .btn-print { background: var(--orange); color: var(--navy); }
+  .btn-print:hover { background: #e8a33a; transform: translateY(-1px); }
+  .btn-copy-h { background: rgba(255,255,255,0.1); color: white; border: 1.5px solid rgba(255,255,255,0.2) !important; }
+  .btn-copy-h:hover { background: rgba(255,255,255,0.18); }
+  .exp-body { padding: 36px 56px; max-width: 1080px; width: 100%; margin: 0 auto; }
+  .exp-sec-label { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--blue); margin-bottom: 12px; }
+  .exp-sec-title { font-size: 20px; font-weight: 800; color: var(--navy); margin-bottom: 20px; }
+  .map-grid { display: flex; flex-direction: column; gap: 16px; margin-bottom: 44px; }
+  .map-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,45,64,0.07); border: 1px solid rgba(0,45,64,0.06); }
+  .mc-header { background: var(--navy); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .mc-tp-num { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--blue); font-weight: 700; margin-bottom: 3px; }
+  .mc-title { font-size: 15px; color: white; font-weight: 700; }
+  .r-badge { padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0; }
+  .rb-advanced { background: var(--lime); color: var(--navy); }
+  .rb-proficient { background: var(--blue); color: white; }
+  .rb-developing { background: var(--orange); color: var(--navy); }
+  .rb-none { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.55); }
+  .mc-rows { padding: 0; }
+  .mc-row { padding: 16px 24px; border-bottom: 1px solid #f0f2f5; display: grid; grid-template-columns: 190px 1fr 1fr; gap: 16px; align-items: start; }
+  .mc-row:last-child { border-bottom: none; }
+  .mc-sc-name { font-size: 12px; font-weight: 700; color: var(--navy); line-height: 1.4; padding-top: 2px; }
+  .mc-q-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-mid); margin-bottom: 5px; }
+  .mc-q-val { font-size: 13px; color: var(--text-dark); line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+  .mc-q-val.empty { color: #b0bec5; font-style: italic; }
+  .mc-footer { padding: 13px 24px; background: rgba(198,205,35,0.06); border-top: 1px solid rgba(198,205,35,0.2); display: flex; gap: 10px; align-items: flex-start; }
+  .mc-commit-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #6a7a00; white-space: nowrap; padding-top: 1px; }
+  .mc-commit-val { font-size: 13px; color: var(--text-dark); line-height: 1.6; white-space: pre-wrap; }
+  .mc-commit-val.empty { color: #b0bec5; font-style: italic; }
+  .coaching-section { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 14px rgba(0,45,64,0.08); margin-bottom: 44px; }
+  .coaching-head { background: var(--navy); padding: 22px 30px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .coaching-head h2 { color: white; font-size: 17px; font-weight: 700; }
+  .coaching-head p { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 3px; }
+  .coaching-box { padding: 30px 32px; font-size: 13.5px; line-height: 1.8; color: var(--text-dark); white-space: pre-wrap; font-family: 'Georgia', serif; background: #f9fafb; max-height: 500px; overflow-y: auto; }
+  .coaching-foot { padding: 13px 22px; background: rgba(245,182,76,0.08); border-top: 1px solid rgba(245,182,76,0.2); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .coaching-foot p { font-size: 13px; color: var(--text-mid); }
+  .btn-copy-inline { background: var(--orange); color: var(--navy); border: none; padding: 10px 20px; border-radius: 7px; cursor: pointer; font-size: 13px; font-weight: 700; font-family: inherit; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; }
+  .btn-copy-inline:hover { background: #e8a33a; }
+
+  @media print {
+    .sidebar, .topbar, .nav-actions, .exp-btn-group, .coaching-foot { display: none !important; }
+    body { background: white; }
+    #screen-export { display: flex !important; }
+    #screen-intro, #screen-workshop { display: none !important; }
+    .exp-header, .exp-body { padding: 20px; }
+    .map-card { break-inside: avoid; margin-bottom: 12px; }
+    .coaching-box { max-height: none; }
+  }
+  @media (max-width: 860px) {
+    .sidebar { display: none; }
+    .q-area { padding: 24px 20px 40px; }
+    .topbar { padding: 14px 16px 14px 14px; }
+    .q-card { padding: 26px 22px; }
+    .exp-header, .exp-body { padding: 24px 20px; }
+    .mc-row { grid-template-columns: 1fr; }
+    .mc-sc-name { border-bottom: 1px solid #f0f2f5; padding-bottom: 6px; margin-bottom: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ INTRO ═══ -->
+<div id="screen-intro" class="screen active">
+  <p class="intro-badge">Leadership Workshop</p>
+  <p class="intro-eyebrow">Team Activity</p>
+  <h1 class="intro-title">Employee Experience Map</h1>
+  <p class="intro-tagline">"Every Interaction Leaves a Mark"</p>
+  <div class="intro-divider"></div>
+  <div class="intro-pullquote">"Employees don't experience your intentions. They experience your patterns."</div>
+  <p class="intro-body">Most leaders evaluate themselves based on their <strong>intentions</strong>. But employees don't experience intentions — they experience what happens <strong>repeatedly</strong>.<br><br>This exercise asks you to step out of your own perspective and examine your leadership through the eyes of one specific employee. As you move through each touchpoint, look for patterns. Do your answers reveal strong communication but weak follow-through? Do you show up well when things are calm but struggle under pressure?<br><br><strong>The goal isn't perfection. The goal is awareness.</strong></p>
+  <p class="intro-note">Leadership blind spots rarely show up as dramatic failures. They show up as small, repeated moments that slowly shape how employees feel about their manager, their team, and their workplace. Be honest — only then will this exercise be worth your time.</p>
+  <button class="btn-begin" onclick="startWorkshop()">Begin the Activity →</button>
+  <p class="intro-meta">10 Touchpoints · 4 Areas Each · ~35–45 minutes</p>
+</div>
+
+<!-- ═══ WORKSHOP ═══ -->
+<div id="screen-workshop" class="screen">
+  <nav class="sidebar">
+    <div class="sidebar-brand"><p class="sb-label">Leadership Workshop</p><p class="sb-title">Employee Experience Map</p></div>
+    <div class="sidebar-prog-wrap">
+      <p class="sp-label">Overall Progress</p>
+      <div class="sp-bar"><div class="sp-fill" id="sp-fill" style="width:0%"></div></div>
+      <p class="sp-pct" id="sp-pct">0% Complete</p>
+    </div>
+    <div class="tp-nav" id="tp-nav"></div>
+  </nav>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="home-btn" onclick="goHome()" title="Return to Overview">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h4a1 1 0 001-1v-3h2v3a1 1 0 001 1h4a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+        </button>
+        <div>
+          <p class="tb-tp" id="tb-tp">Touchpoint 1 of 10</p>
+          <h1 class="tb-title" id="tb-title">Recruiting &amp; Hiring</h1>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn-return" id="btn-return" onclick="returnToCurrent()"></button>
+        <p class="tb-sub-lbl" id="tb-sub-lbl"></p>
+        <div class="step-dots" id="step-dots"></div>
+      </div>
+    </div>
+
+    <div class="q-area">
+      <div class="q-area-inner">
+        <div class="subcat-strip" id="subcat-strip"></div>
+
+        <!-- TP-level framing question card -->
+        <div class="framing-card" id="framing-card">
+          <p class="fc-label">Framing Question</p>
+          <p class="fc-q" id="fc-q"></p>
+        </div>
+
+        <!-- Question card -->
+        <div class="q-card">
+          <p class="qc-subcat-label" id="qc-subcat-label"></p>
+          <h2 class="qc-area-title" id="qc-area-title"></h2>
+
+          <!-- Blue context statement (always visible within an area) -->
+          <div class="area-context" id="area-context"></div>
+
+          <p class="q-num" id="q-num"></p>
+          <h3 class="q-text" id="q-text"></h3>
+          <p class="q-hint" id="q-hint" style="display:none"></p>
+
+          <!-- Q3 summary shown in overall phase -->
+          <div id="q3-summary" style="display:none"></div>
+          <div class="q3-divider" id="q3-divider" style="display:none"></div>
+          <p class="overall-q-intro" id="overall-q-intro" style="display:none">Now, your highest-leverage commitment:</p>
+
+          <textarea class="q-input" id="q-input" rows="6" placeholder="Your response..."></textarea>
+
+          <div class="rating-section" id="rating-section">
+            <p class="rating-intro">Select the rating that most honestly reflects where you are with this entire touchpoint:</p>
+            <div class="rating-opts">
+              <button class="r-btn r-advanced" onclick="setRating('Advanced')" data-r="Advanced">
+                <div class="r-icon">🏆</div>
+                <div><p class="r-label">Advanced</p><p class="r-desc">I consistently demonstrate this skill and can guide others</p></div>
+              </button>
+              <button class="r-btn r-proficient" onclick="setRating('Proficient')" data-r="Proficient">
+                <div class="r-icon">✅</div>
+                <div><p class="r-label">Proficient</p><p class="r-desc">I perform this skill effectively in most situations</p></div>
+              </button>
+              <button class="r-btn r-developing" onclick="setRating('Developing')" data-r="Developing">
+                <div class="r-icon">🔧</div>
+                <div><p class="r-label">Developing</p><p class="r-desc">I'm still building consistency or confidence in this area</p></div>
+              </button>
+            </div>
+          </div>
+
+          <div class="nav-actions">
+            <button class="btn-back" id="btn-back" onclick="goBack()">← Back</button>
+            <button class="btn-next" id="btn-next" onclick="goNext()">
+              <span id="btn-next-txt">Next</span>
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EXPORT ═══ -->
+<div id="screen-export" class="screen">
+  <div class="exp-header">
+    <div>
+      <p class="exp-eyebrow">Your Results</p>
+      <h1>My Leadership Map</h1>
+      <p>Employee Experience Map · Leadership Workshop</p>
+    </div>
+    <div class="exp-btn-group">
+      <button class="btn-exp btn-copy-h" onclick="copyPrompt()">📋 Copy Coaching Prompt</button>
+      <button class="btn-exp btn-print" onclick="window.print()">🖨 Print / Save as PDF</button>
+    </div>
+  </div>
+  <div class="exp-body">
+    <p class="exp-sec-label">My Leadership Map</p>
+    <h2 class="exp-sec-title">Touchpoint Responses &amp; Ratings</h2>
+    <div class="map-grid" id="map-grid"></div>
+    <p class="exp-sec-label">Next Step</p>
+    <h2 class="exp-sec-title">Your AI Coaching Prompt</h2>
+    <div class="coaching-section">
+      <div class="coaching-head">
+        <div><h2>Leadership Reflection &amp; Coaching Prompt</h2><p>Copy this prompt and paste it into Claude or your AI assistant of choice</p></div>
+      </div>
+      <div class="coaching-box" id="coaching-box"></div>
+      <div class="coaching-foot">
+        <p>Paste into <strong>Claude.ai</strong> for a personalized executive leadership coaching session based on your responses.</p>
+        <button class="btn-copy-inline" onclick="copyPrompt()">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA
+// Each subcat: { name, context (blue statement), q1 (behavioral question), q2hint }
+// ═══════════════════════════════════════════════════════════
+const TPS = [
+  {
+    id:1, title:"Recruiting & Hiring",
+    workshopQ:"What message does your hiring process send to candidates before they even start? Think about every moment from first contact to day-one arrival.",
+    summary:"Recruiting is the first test of trust. Candidates are deciding whether leadership is honest enough to tell the truth about the role, disciplined enough to communicate consistently, transparent enough to set realistic expectations, and prepared enough to make them feel expected before they ever walk through the door. Long before an employee starts, they're already learning what kind of leadership experience they can expect.",
+    subcats:[
+      {
+        name:"Interview Experience",
+        headline:"The interview is the first test of trust.",
+        context:"Candidates are not just answering your questions. They're reading your leadership. They notice whether they feel welcomed, respected, and evaluated fairly — or whether they are being pulled into a polished sales pitch with the hard parts conveniently tucked behind the curtain.",
+        q1:"What does your typical interview actually look like — not your best one, your average one?",
+        q2hint:"What one specific change to how you conduct interviews would most improve a candidate's experience and your ability to attract the right people — not just available people?"
+      },
+      {
+        name:"Pre-Employment Communication",
+        headline:"Silence after interest creates doubt before commitment.",
+        context:"The space between interview and offer is not dead air. It's part of the employee experience. Candidates are watching how quickly you respond, how clearly you communicate next steps, and whether your follow-through matches the energy you showed when you wanted them interested.",
+        q1:"How quickly do you typically follow up and how often? What types of information do you provide? What do you do to prepare the candidate for their first day?",
+        q2hint:"What one change in your communication between interview and first day would most reduce candidate anxiety, drop-off, and the sense that no one is paying attention?"
+      },
+      {
+        name:"Clarity & Honesty of Job Expectations",
+        headline:"People rarely leave because the job is hard.",
+        context:"Overselling a role may fill a vacancy faster, but it creates a trust debt the employee pays for later. When candidates are blindsided by the pace, pressure, team dynamics, resident demands, or performance standards, they do not feel challenged. They feel set up. Honest expectations give candidates the dignity of a real choice.",
+        q1:"When you describe the role to a candidate, what do you specifically cover? What are the difficult parts of the job you mention — and which do you leave out?",
+        q2hint:"What one thing about how you frame job expectations during hiring would most reduce early turnover from employees who say 'this is not what I signed up for'?"
+      },
+      {
+        name:"Setting Expectations for the First Day",
+        headline:"Preparedness is belonging in action.",
+        context:"A new hire should not spend the night before Day 1 wondering where to park, who to ask for, what to wear, or whether anyone remembered they were coming. Those details may feel small to leadership, but to the new employee, they're signals: we expected you, we prepared for you, and your success matters before your productivity does.",
+        q1:"Walk through what you typically do to prepare a new hire for their first day. What information do you send, and how far in advance?",
+        q2hint:"What one change in how you prepare new hires for their first day would most eliminate that first-day anxiety and signal that you are an organized, attentive leader who actually wanted them to show up?"
+      }
+    ]
+  },
+  {
+    id:2, title:"Day 1 Orientation & Culture Immersion",
+    workshopQ:"A new employee's first day sets the tone for everything that follows. What tone are you actually setting — versus what you intend?",
+    summary:"Day 1 is not about paperwork, policies, or orientation checklists, it's about belonging. New employees arrive looking for signals that they made the right decision, that leadership was prepared for them, and that they understand what success looks like. The way they're welcomed, the readiness of their tools, the clarity of expectations, and the behaviors they observe all shape their first impression of the culture. Long before employees decide whether they trust your values, they're watching to see if those values show up in your actions. A strong first day communicates a simple but powerful message: you matter, we prepared for you, and you belong here.",
+    subcats:[
+      {
+        name:"First-Day Welcome & Team Introductions",
+        headline:"Belonging starts in the first hour, not the first month.",
+        context:"New employees walk through the door carrying excitement, uncertainty, and a simple question: Did I make the right decision? The way they're welcomed, introduced, and included on Day 1 immediately shapes their sense of belonging.",
+        q1:"Walk through what you personally do in the first hour a new employee arrives. Who do you involve, and how does it unfold?",
+        q2hint:"What one thing about how you welcome new employees on their first day would most make them feel that joining your team was the right call — and that they matter here?"
+      },
+      {
+        name:"Equipment & Tech Readiness",
+        headline:"Preparation is a form of respect.",
+        context:"Nothing communicates 'we weren't ready for you' faster than a missing computer, inactive login, or a desk that wasn't prepared. Employees notice whether leadership invested time preparing for their arrival.",
+        q1:"What is actually ready for a new hire on Day 1 — equipment, system access, tools? What typically isn't?",
+        q2hint:"What one operational change would most eliminate the 'we weren't ready for you' experience for new hires — and what has been the real cost of not fixing this yet?"
+      },
+      {
+        name:"Clarity of Expectations",
+        headline:"Confused employees don't become accountable employees.",
+        context:"People cannot consistently meet expectations they don't fully understand. New hires need more than a list of responsibilities — they need clarity around priorities, standards, success measures, and how decisions get made. Without that clarity, employees spend their energy guessing instead of growing.",
+        q1:"What specific expectations do you communicate on Day 1? Walk through exactly what you cover.",
+        q2hint:"What one change in how you communicate expectations on Day 1 would most set new employees up to succeed — rather than discover standards through trial, error, and embarrassment?"
+      },
+      {
+        name:"Understanding Culture, Values & Standards",
+        headline:"Employees learn culture from behavior, not posters.",
+        context:"Every organization claims to value trust, teamwork, accountability, and respect. Employees quickly learn whether those values are real by watching what leaders reward, tolerate, and model. Culture becomes believable when people see values consistently reflected in everyday decisions and interactions.",
+        q1:"How do you personally introduce your team's culture and standards to a new hire on Day 1? What do you say, show, or model?",
+        q2hint:"What one thing you do — or fail to do — on Day 1 most shapes how a new employee understands the culture here? And is that the impression you want them walking away with?"
+      }
+    ]
+  },
+  {
+    id:3, title:"Monthly Onboarding & Integration",
+    workshopQ:"After the first week fades, do new hires feel like they're thriving with genuine support — or quietly figuring it out alone while you stay busy?",
+    summary:"Orientation may end after a few days, but onboarding doesn't. The first 60–90 days are when employees decide whether they feel supported, capable, and confident in their role, or whether they're expected to figure things out on their own. Consistent check-ins, role-specific training, practical coaching, and support while learning new systems help employees build competence and confidence at the same time. Just as importantly, they learn what great service looks like by observing, practicing, and receiving feedback before they're expected to deliver it independently. Effective onboarding isn't about transferring information, it's about helping employees become successful, connected, and fully integrated into the culture and expectations of the team.",
+    subcats:[
+      {
+        name:"Regular Check-Ins",
+        headline:"Silence is not the same thing as success.",
+        context:"Many employees struggle quietly during their first few months. They don't want to appear incapable, needy, or behind. Regular check-ins communicate that support doesn't disappear once orientation ends. Consistent connection helps employees feel confident enough to ask for help before small challenges become larger problems.",
+        q1:"How often do you check in with new hires in their first 90 days, and what do those conversations actually look like?",
+        q2hint:"What one change in how you conduct check-ins with new hires would most increase their confidence and your early awareness of how they're actually doing — before it becomes a retention problem?"
+      },
+      {
+        name:"Systems & Tools Mastery",
+        headline:"Competence creates confidence.",
+        context:"Few things drain confidence faster than feeling lost in the systems required to do your job. Employees need space to learn, practice, ask questions, and make mistakes without feeling judged. When leaders normalize the learning curve, people develop confidence faster and engage more fully in their role.",
+        q1:"What does your current process for teaching new hires your systems and tools look like? Who is responsible, and what gets covered?",
+        q2hint:"What one change in how you support systems and tools mastery would most reduce new-hire errors, reduce the burden on your experienced team, and build confidence faster?"
+      },
+      {
+        name:"Role-Specific Training",
+        headline:"Generic training creates preventable mistakes.",
+        context:"Employees don't need more information — they need relevant information. Effective onboarding connects training directly to the realities of the role, helping people understand not just what to do, but how to do it well when real-world challenges appear.",
+        q1:"Walk through what role-specific training looks like for your new hires in the first 30–60 days.",
+        q2hint:"What one improvement to your role-specific training approach would most reduce the 'sink or swim' experience and decrease the time before new employees are genuinely contributing?"
+      },
+      {
+        name:"Customer Experience Expectations",
+        headline:"Employees can't deliver an experience they've never been shown.",
+        context:"Customer experience isn't a slogan. It's a collection of behaviors, conversations, decisions, and standards that employees observe and repeat. Clear examples, coaching, and modeling help employees understand what great service actually looks like before they represent the organization on their own.",
+        q1:"What do you specifically communicate to new hires about resident interaction and service standards before they're on their own?",
+        q2hint:"What one thing you would change about how you set and reinforce customer experience expectations with new hires — before a resident interaction goes sideways and reveals the gap?"
+      }
+    ]
+  },
+  {
+    id:4, title:"Trust-Building Moments",
+    workshopQ:"What behaviors build trust slowly over time — and what behaviors destroy it instantly? Which side of that equation are you most consistently on?",
+    summary:"Trust isn't built through speeches, mission statements, or leadership titles. It's built through thousands of small moments where employees decide whether leadership is believable. Every promise kept, every mistake owned, every confidential conversation protected, and every action aligned with stated values either strengthens or weakens that trust. Employees do not expect perfection, but they do expect consistency, honesty, and accountability. Over time, trust becomes the foundation that determines whether people feel safe speaking up, taking ownership, and bringing their best effort to work, or whether they spend their energy protecting themselves from disappointment. In the end, employees don't trust leaders because of what they say. They trust them because of what they repeatedly do.",
+    subcats:[
+      {
+        name:"Following Through on Commitments",
+        headline:"Trust is built in the small promises.",
+        context:"Employees notice every commitment leadership makes — and every commitment leadership forgets. Follow-through isn't about perfection. It's about demonstrating that your word carries weight. When leaders consistently do what they say they will do, trust compounds. When they don't, trust quietly erodes.",
+        q1:"Think about commitments you've made to your team recently. How consistently do you follow through — and what tends to get dropped when you're busy?",
+        q2hint:"What one behavioral change around how you make and track commitments to your team would most rebuild or strengthen the trust that your consistency — or inconsistency — has created?"
+      },
+      {
+        name:"Owning Mistakes",
+        headline:"Accountability starts at the top.",
+        context:"Employees don't expect leaders to be flawless. They do expect leaders to be honest. When leaders acknowledge mistakes, take responsibility, and repair the impact, they create a culture where accountability feels safe rather than threatening.",
+        q1:"Describe the last time you made a clear mistake as a leader. What did you actually say and do about it?",
+        q2hint:"What one change in how you respond to your own mistakes would most strengthen your team's trust and respect — and model the accountability culture you say you want?"
+      },
+      {
+        name:"Handling Confidential Conversations",
+        headline:"Psychological safety is earned, not announced.",
+        context:"Employees share sensitive information only when they believe it will be handled with care and discretion. Trust grows when people know their concerns will be protected. Once that confidence is broken, honesty becomes significantly harder to recover.",
+        q1:"When an employee shares something sensitive with you, what do you typically do with that information?",
+        q2hint:"What one change in how you handle sensitive or confidential conversations would most make your team feel safe coming to you before problems escalate?"
+      },
+      {
+        name:"Consistency Between Words & Actions",
+        headline:"Employees believe what leaders do, not what leaders say.",
+        context:"Trust lives in alignment. Every gap between leadership messaging and leadership behavior creates confusion and skepticism. Consistency allows employees to predict what matters, what is expected, and what kind of leadership they can rely on.",
+        q1:"Where is the most significant gap between what you tell your team to do and what you actually do yourself?",
+        q2hint:"What one change in your own behavior would most close the gap between what you say you value and how you actually show up — especially on your hard days?"
+      }
+    ]
+  },
+  {
+    id:5, title:"Communication & Connection",
+    workshopQ:"When people leave conversations with you, do they feel clearer, valued, and supported — or smaller, confused, and guarded?",
+    summary:"Communication is not just how information moves through an organization, it's how trust, respect, and connection are built or broken every day. Employees pay close attention to a leader's tone, their willingness to truly listen, the recognition they give, and the way they show up in everyday interactions. When people feel heard, appreciated, and respected, they're more likely to speak honestly, engage fully, and contribute their best work. When they feel dismissed, overlooked, or talked at instead of talked with, they begin to withdraw. Over time, the quality of communication becomes the quality of the culture. Every conversation, meeting, and interaction sends a message about what leadership values, who matters, and whether employees are part of a team — or simply working alongside one.",
+    subcats:[
+      {
+        name:"Communication Style & Tone",
+        headline:"People remember how you made them feel long after they forget what you said.",
+        context:"Leadership communication is about more than delivering information. Your tone determines whether employees feel respected or diminished, supported or judged, safe or defensive. People need communication that is clear, respectful, and predictable. When leaders manage their emotions instead of spreading them, people spend less energy protecting themselves and more energy focusing on the work.",
+        q1:"How would you describe your communication style when things are going well? How does it change under stress or when you're frustrated?",
+        q2hint:"What one change in your communication style — not what you say, but how you say it — would most change how your team feels after conversations with you?"
+      },
+      {
+        name:"Listening Without Interrupting or Dismissing",
+        headline:"Employees stop telling the truth when they stop feeling heard.",
+        context:"Most leaders believe they listen. Employees define listening differently. To them, listening means feeling understood before being corrected, coached, or redirected. When employees repeatedly feel interrupted, dismissed, or rushed toward solutions, they begin filtering what they share. Over time, leaders stop hearing the real issues — not because employees don't have concerns, but because they've learned those concerns won't truly be heard.",
+        q1:"When an employee brings you a concern or problem, walk through what typically happens in that conversation from your side.",
+        q2hint:"What one behavioral change in how you listen would most make your team feel genuinely heard rather than managed, redirected, or tolerated?"
+      },
+      {
+        name:"Recognition & Appreciation",
+        headline:"What gets noticed gets repeated.",
+        context:"Employees do not need constant praise, but they do need evidence that their effort matters. When recognition only appears after major accomplishments, people learn that consistency, reliability, and everyday excellence are largely invisible. Recognition reinforces culture. It tells employees which behaviors matter, what leadership values, and whether their contributions are seen as meaningful or simply expected.",
+        q1:"When did you last specifically recognize someone on your team? What did you say, to whom, and how long after the event was it?",
+        q2hint:"What one change in how you recognize and appreciate your team's contributions would most improve morale and make people feel that showing up fully is actually noticed?"
+      },
+      {
+        name:"Team Meetings & Daily Interactions",
+        headline:"Culture is built in ordinary moments, not annual events.",
+        context:"Employees experience leadership far more through everyday interactions than through mission statements or company values. Team meetings, one-on-one conversations, property walks, and hallway interactions all communicate what matters, who matters, and how people are expected to treat one another. Every interaction either strengthens connection or weakens it.",
+        q1:"Describe what your team meetings look like — how often, how long, what you cover, and what the energy in the room typically is.",
+        q2hint:"What one change in how you run your meetings or show up in daily interactions would most improve your team's sense of direction and their sense of connection to you as their leader?"
+      }
+    ]
+  },
+  {
+    id:6, title:"Accountability & Growth",
+    workshopQ:"Do employees experience accountability from you as punishment — or as development? What's the real difference, and which one are you delivering?",
+    summary:"Accountability is not about catching mistakes — it's about developing people. Employees grow when leaders move beyond correction and focus on coaching, feedback, fairness, and long-term development. The way leaders hold people accountable determines whether employees feel supported in improving or simply punished for falling short. Consistent standards, thoughtful feedback, and meaningful growth conversations create an environment where accountability feels fair, trust remains intact, and employees can see a future for themselves. When people believe leadership is invested in both their performance and their potential, they become more engaged, more capable, and more committed to the success of the team.",
+    subcats:[
+      {
+        name:"Coaching Conversations",
+        headline:"Leaders who only correct create compliance. Leaders who coach create capability.",
+        context:"Employees need conversations that help them understand what happened, why it happened, and how they can improve moving forward. The goal of coaching is not to win the conversation. The goal is for the employee to leave more confident, more capable, and better equipped to handle the next challenge without needing someone else to solve it for them.",
+        q1:"Describe what a coaching conversation with one of your employees actually looks like. Who does most of the talking?",
+        q2hint:"What one change in how you approach coaching conversations would most shift your team's experience from being corrected to being genuinely developed?"
+      },
+      {
+        name:"Feedback Delivery",
+        headline:"Feedback is only useful if people can hear it.",
+        context:"Employees are far more likely to receive difficult feedback when it is timely, specific, respectful, and focused on improvement rather than frustration. The way feedback is delivered determines whether people hear guidance or criticism. When trust exists and feedback is handled well, accountability feels supportive. When it is handled poorly, accountability feels personal.",
+        q1:"Walk through the last time you gave someone critical feedback — when it was, how you delivered it, and what happened after.",
+        q2hint:"What one change in how you deliver feedback would most increase the likelihood that your team actually learns, adjusts, and grows from it — rather than bracing, deflecting, or resenting it?"
+      },
+      {
+        name:"Accountability Standards",
+        headline:"Employees don't resent standards. They resent double standards.",
+        context:"Nothing damages credibility faster than inconsistent accountability. Employees watch closely to see whether expectations apply equally to everyone or only to certain people. They notice who gets corrected, who gets excused, and who is allowed to operate outside the rules. Fairness is one of the strongest trust builders in leadership.",
+        q1:"Name one standard on your team that is not being consistently met. How have you responded to it, and how long has this been going on?",
+        q2hint:"What one change in how you establish or enforce accountability standards would most improve team trust — and make your high performers believe that standards here are real?"
+      },
+      {
+        name:"Career Conversations & Growth Opportunities",
+        headline:"People stay where they can see themselves growing.",
+        context:"Employees want more than a paycheck and a workload. They want to know that someone sees potential in them beyond their current role. Growth conversations communicate something powerful: you matter not just for what you produce today, but for who you can become tomorrow. Leaders who consistently create those conversations strengthen engagement, retention, and commitment long before employees begin looking elsewhere.",
+        q1:"When did you last have a real conversation with each team member about their goals? What did you ask, and what did you learn?",
+        q2hint:"What one change in how you approach career development conversations would most improve retention and motivation — by making employees feel that their future here is worth investing in?"
+      }
+    ]
+  },
+  {
+    id:7, title:"Leadership Under Pressure",
+    workshopQ:"When pressure hits, do you become a source of stability for your team — or another source of stress they have to manage around?",
+    summary:"Anyone can lead when things are calm. Leadership is revealed when things go wrong. Resident escalations, staffing shortages, occupancy challenges, inspections, and high-pressure situations expose whether a leader creates confidence or creates fear. Employees watch closely during these moments, looking for signs that leadership will remain calm, communicate clearly, share responsibility, and focus on solutions rather than blame. The way leaders respond under pressure shapes trust more than the pressure itself. When employees feel supported, informed, and protected during difficult situations, resilience grows. When they feel abandoned, blamed, or overwhelmed, trust erodes and performance suffers. Ultimately, employees don't judge leaders by how they perform when everything is working — they judge them by who they become when it isn't.",
+    subcats:[
+      {
+        name:"Conflict Resolution",
+        headline:"Your team learns how safe they are by watching what you do when things go wrong.",
+        context:"Moments of conflict reveal whether employees can trust their leader to stand beside them during difficult situations. When leaders remain composed, supportive, and strategic under pressure, employees gain confidence. When leaders publicly distance themselves or throw people under the bus, trust can disappear in a single conversation.",
+        q1:"Walk through what you typically say and do when a resident escalation reaches you. How do you involve — or shield — your team in that moment?",
+        q2hint:"What one change in how you handle resident escalations would most improve both the resolution outcome and your team's confidence that you will support them — not sacrifice them — when things go sideways?"
+      },
+      {
+        name:"Staffing Shortages",
+        headline:"People can survive hard work. They struggle to survive feeling abandoned.",
+        context:"Staffing shortages test more than operational capacity — they test leadership credibility. Employees understand that vacancies happen, unexpected absences occur, and workloads increase. What they watch closely is how leadership responds when the pressure arrives. Employees are far more willing to push through difficult seasons when they believe leadership sees the challenge, shares the burden, and cares about the impact on the people carrying it.",
+        q1:"When you're short-staffed, what do you actually do and say to the team? How do you communicate about the load they're carrying?",
+        q2hint:"What one thing you would change about how you lead — operationally and emotionally — when your team is short-staffed and everyone is being asked to do more?"
+      },
+      {
+        name:"Occupancy Pressure",
+        headline:"Pressure without support feels like blame.",
+        context:"Leasing goals, occupancy targets, and revenue expectations matter. But when metrics become the only message employees hear, people begin to feel like scorecards rather than contributors. Employees perform best when they understand both the goal and the strategy. They need context, coaching, resources, and encouragement — not just reminders that numbers are behind.",
+        q1:"How do you typically communicate occupancy targets and shortfalls to your team? What is the tone and focus of that message?",
+        q2hint:"What one change in how you communicate and manage occupancy pressure would most keep your team engaged, resourced, and motivated — rather than demoralized and defensive?"
+      },
+      {
+        name:"Inspections & Corporate Visits",
+        headline:"Pressure doesn't create character — it reveals it.",
+        context:"Inspections, audits, and corporate visits often expose a leader's true leadership style. Employees quickly notice whether their manager prepares them, supports them, and shares responsibility — or whether stress creates panic, micromanagement, and public criticism. Teams gain confidence when leaders remain consistent under pressure. They lose confidence when leadership behaves differently in front of executives than they do when nobody is watching.",
+        q1:"How do you prepare your team for corporate visits or inspections, and how do you behave during the visit itself?",
+        q2hint:"What one change in how you lead your team through inspections or corporate visits would most build their confidence and trust that you prepare, protect, and stand with them?"
+      }
+    ]
+  },
+  {
+    id:8, title:"Human Connection Moments",
+    workshopQ:"Would your team describe you as emotionally present and intelligent — or emotionally unavailable when it matters most?",
+    summary:"Leadership is tested just as much in human moments as it is in business moments. Employees pay attention to whether leaders notice burnout before it becomes a crisis, show compassion when life gets difficult, celebrate progress along the way, and see people as more than the work they produce. These moments communicate whether employees are viewed as human beings or simply resources to manage. When people feel supported during challenges, recognized for their contributions, and genuinely known by their leaders, trust deepens and loyalty grows. Human connection is not a distraction from performance, it is often the reason performance remains sustainable, especially during difficult seasons. The strongest cultures are built when employees believe they matter not only for what they do, but for who they are.",
+    subcats:[
+      {
+        name:"Burnout & Exhaustion Support",
+        headline:"Burnout is rarely a performance problem. It's usually a leadership visibility problem.",
+        context:"Most burned-out employees do not announce that they're struggling. They simply become quieter, less engaged, less patient, and less connected to the work they once cared about. By the time burnout becomes obvious, it has often been building for months. Employees need leaders who notice the early signs, ask meaningful questions, and create space for honest conversations before exhaustion turns into disengagement, resignation, or emotional withdrawal from the team.",
+        q1:"Think about the last person on your team who was clearly burning out. When did you notice, and what did you specifically do?",
+        q2hint:"What one change in how you recognize and respond to burnout would most protect your team's long-term engagement, health, and loyalty?"
+      },
+      {
+        name:"Family Emergencies & Personal Hardship",
+        headline:"People never forget how leadership treated them on their worst day.",
+        context:"Life inevitably brings loss, illness, family emergencies, and personal crises. During those moments, employees learn whether leadership truly values people — or simply values productivity. Policies matter. Procedures matter. Humanity matters more. Employees remember whether they were treated with compassion, flexibility, dignity, and understanding when life became difficult.",
+        q1:"Describe what you did the last time a team member had a family emergency or personal crisis.",
+        q2hint:"What one change in how you respond to your team members' personal hardships would most make people feel that they are a valued person here — not just a function — and that taking care of life won't cost them professionally?"
+      },
+      {
+        name:"Celebrating Wins & Milestones",
+        headline:"What leaders celebrate becomes what teams value.",
+        context:"Employees quickly learn where leadership attention goes. Recognition is more than appreciation — it is reinforcement. Celebrating wins, progress, consistency, and extra effort helps employees understand that their contributions are seen and valued. Over time, recognition strengthens motivation, engagement, and connection to the work.",
+        q1:"When did you last celebrate a win or milestone with someone on your team? What specifically did you do to mark it?",
+        q2hint:"What one change in how you celebrate wins and milestones would most make your team feel valued, motivated, and proud to be part of this team?"
+      },
+      {
+        name:"Whether Employees Feel Seen as People",
+        headline:"Employees commit to leaders who see them, not just the work they produce.",
+        context:"There is a significant difference between managing someone's performance and knowing who they are. Employees want to believe they matter beyond their schedule, job title, leasing goals, work orders, or productivity metrics. When people feel genuinely seen, they are more likely to trust leadership, speak honestly, stay engaged during difficult periods, and remain committed to the team.",
+        q1:"What do you know about each person on your team beyond their job performance? List a few personal things you know about each of them.",
+        q2hint:"What one change in how you show up as a leader — beyond your operational role — would most make your team feel that they are seen, valued, and cared for as whole human beings?"
+      }
+    ]
+  },
+  {
+    id:9, title:"Culture Creation",
+    workshopQ:"What behaviors does your leadership repeatedly reward, tolerate, or ignore — and what is that silently teaching your team every single day?",
+    summary:"Culture is not created by mission statements, values posters, or leadership speeches. Culture is created by what employees experience every day — how mistakes are handled, how difficult conversations are addressed, whether people feel safe speaking honestly, and what behaviors leaders consistently allow or confront. Employees quickly learn whether accountability is about growth or blame, whether honesty is welcomed or punished, and whether leadership's actions truly align with its words. When people feel safe telling the truth, addressing issues directly, and taking ownership without fear of humiliation, trust grows and culture strengthens. When fear, avoidance, inconsistency, or tolerated dysfunction take hold, employees stop speaking up and start protecting themselves. Ultimately, culture is not defined by what leaders say they value, it's defined by what employees believe happens here when no one is watching.",
+    subcats:[
+      {
+        name:"Accountability vs. Blame",
+        headline:"People tell the truth when mistakes are survivable.",
+        context:"There is a profound difference between accountability and blame. Accountability focuses on ownership, learning, and improvement. Blame focuses on fault, embarrassment, and self-protection. When leaders respond to mistakes with curiosity, clarity, and accountability, people become more willing to speak up, admit errors, and solve problems. When mistakes are met with anger, humiliation, or punishment, people learn to hide, deflect, and protect themselves.",
+        q1:"When something goes wrong on your property, walk through what you typically say and do in the first conversation with the person involved.",
+        q2hint:"What one change in how you respond to mistakes or failures would most shift your culture toward genuine ownership and away from blame and self-protection?"
+      },
+      {
+        name:"Gossip vs. Direct Communication",
+        headline:"Gossip is often a symptom of leadership, not a character flaw.",
+        context:"Gossip flourishes anywhere employees lack confidence that difficult conversations will be handled fairly, respectfully, and productively. Leaders shape this environment every day. When people see concerns addressed directly, respectfully, and without retaliation, trust grows. When difficult conversations are avoided, ignored, or punished, side conversations become the safest option available.",
+        q1:"Have you been aware of gossip circulating on your team recently? What did you do with that information?",
+        q2hint:"What one change in how you model or address communication norms would most reduce gossip on your team and build the confidence in people to say hard things directly and respectfully?"
+      },
+      {
+        name:"Psychological Safety to Speak Honestly",
+        headline:"If people can't tell you bad news, you're leading in the dark.",
+        context:"Psychological safety is not about avoiding conflict. It is about creating an environment where people can speak honestly without fearing damage to their reputation, relationships, or opportunities. Employees constantly assess whether disagreement is welcomed, whether feedback is genuinely wanted, and whether difficult truths are handled with maturity. When psychological safety exists, organizations learn faster, adapt faster, and solve problems earlier. When it doesn't, people become experts at telling leaders what they want to hear.",
+        q1:"Think about the last time someone challenged your thinking or disagreed with a decision you made. How did you respond — in the moment and in the days after?",
+        q2hint:"What one change in how you respond to honest feedback, disagreement, or difficult truths would most build psychological safety on your team — and unlock the information you currently aren't getting?"
+      },
+      {
+        name:"What Behaviors You Repeatedly Tolerate",
+        headline:"What you tolerate becomes your culture.",
+        context:"Employees pay far more attention to what leaders allow than what leaders say. Every behavior that goes unaddressed sends a message about what the real standards are. Over time, tolerated behaviors become accepted behaviors, and accepted behaviors become culture. The fastest way to lose credibility is to describe one culture while allowing another to exist. Employees believe leadership values when they see leaders consistently protect them.",
+        q1:"Name one behavior on your team you are aware of but have not fully addressed. How long has it been going on and why hasn't it been resolved?",
+        q2hint:"What one behavior you have been tolerating — that you know is damaging team culture, morale, or performance — would you commit to addressing directly and consistently, starting now?"
+      }
+    ]
+  },
+  {
+    id:10, title:"Exit Experience",
+    workshopQ:"The way someone leaves your team tells your remaining employees everything about the culture you've built. What story are departures currently telling?",
+    summary:"The employee experience does not end when someone resigns, retires, or is terminated. In many ways, the exit experience is the final test of leadership character. Employees pay close attention to how people are treated when they are leaving because it reveals whether respect, professionalism, and dignity are conditional — or whether they truly reflect the organization's values. The way leaders handle resignations, terminations, and the period leading up to an employee's departure shapes not only the experience of the person leaving, but also the trust of everyone who remains. Long after employees are gone, they carry the story of how they were treated. The ultimate measure of a healthy culture is not whether every employee stays forever, it's whether they leave believing they were respected, treated fairly, and would confidently recommend the experience to someone else.",
+    subcats:[
+      {
+        name:"Resignation Conversations",
+        headline:"The way people leave says as much about your leadership as the way they join.",
+        context:"When an employee resigns, leadership has a choice. They can become defensive, distant, resentful, or transactional. Or they can become curious, respectful, and professional. Employees rarely remember every conversation they had during their employment, but they almost always remember how they were treated when they decided to leave.",
+        q1:"Walk through the last resignation conversation you had — what you said, how you responded initially, and how the relationship felt after.",
+        q2hint:"What one change in how you handle resignation conversations would most protect both the relationship and your team's confidence that people are treated with dignity here, even when they choose to leave?"
+      },
+      {
+        name:"Respect During the Exit Process",
+        headline:"People notice how they're treated when they're no longer needed.",
+        context:"The period between resignation and final day sends a powerful message — not just to the departing employee, but to everyone who remains. Organizations that maintain professionalism, communication, and appreciation through the final day reinforce trust. Organizations that emotionally disconnect, exclude, or treat departing employees differently reveal a culture built on convenience rather than respect.",
+        q1:"Describe what your exit process looks like from the day someone resigns to their last day. What do you personally do?",
+        q2hint:"What one change in how you manage the exit experience would most make departing employees feel that they mattered here — and give remaining employees reason to believe their own exit won't look different?"
+      },
+      {
+        name:"Professionalism During Termination Conversations",
+        headline:"Dignity costs nothing, but its absence costs trust.",
+        context:"Terminations are among the most difficult responsibilities leaders carry. They are also among the most visible. The way a leader handles a termination shapes how every remaining employee feels about fairness, safety, and leadership character. In these moments, leadership is measured less by the decision itself and more by how that decision is delivered and executed.",
+        q1:"Walk through a recent termination conversation — how you prepared, what you said, and how the person left the room.",
+        q2hint:"What one change in how you approach and conduct termination conversations would most protect the dignity of the individual and the trust of the team watching from a distance?"
+      },
+      {
+        name:"Whether Departing Employees Would Recommend Working Here",
+        headline:"Your culture follows people long after they leave.",
+        context:"A departing employee becomes part of your reputation. They tell future applicants, former coworkers, friends, and industry contacts what it was actually like to work here. Employees become advocates when they feel respected throughout the entire journey — not because everything was perfect, but because leadership was honest, fair, consistent, and human.",
+        q1:"If you had to be honest, what would the last 2–3 people who left your team say about working for you — to a friend who asked them directly?",
+        q2hint:"What one change across the full lifecycle of how you lead would most convert departing employees from cautionary stories into advocates who say 'my manager was someone worth working for'?"
+      }
+    ]
+  }
+];
+
+// Q1 text and Q2 text are now fixed per step index
+const Q_LABELS = ["Question 1 of 2", "Question 2 of 2"];
+const Q2_TEXT = "If I could change one thing about how I handle this area, it would be…";
+const Q1_PLACEHOLDER = "Be specific and honest — describe what actually happens, not what you wish happened...";
+const Q2_PLACEHOLDER = "One specific, observable change I would make in this area...";
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let s = { tp:0, sc:0, step:0, phase:'subcat' };
+let maxTP = 0; // furthest touchpoint reached
+let savedPosition = null; // position saved when jumping to review a past TP
+
+const answers = {};
+TPS.forEach((tp, i) => {
+  answers[i] = {
+    subcats: tp.subcats.map(() => ({ q1:"", q2:"" })),
+    rating: "",
+    overallChange: ""
+  };
+});
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+function startWorkshop() {
+  showScreen("screen-workshop");
+  renderSidebar();
+  renderView();
+}
+
+function goHome() {
+  saveAnswer();
+  showScreen("screen-intro");
+}
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0, 0);
+}
+
+function saveAnswer() {
+  if (s.phase === 'subcat') {
+    const key = s.step === 0 ? "q1" : "q2";
+    answers[s.tp].subcats[s.sc][key] = document.getElementById("q-input").value.trim();
+  } else if (s.phase === 'overall') {
+    answers[s.tp].overallChange = document.getElementById("q-input").value.trim();
+  }
+}
+
+function goNext() {
+  saveAnswer();
+  if (s.phase === 'subcat') {
+    if (s.step < 1) {
+      s.step++;
+    } else if (s.sc < TPS[s.tp].subcats.length - 1) {
+      s.sc++;
+      s.step = 0;
+    } else {
+      s.phase = 'rating';
+    }
+  } else if (s.phase === 'rating') {
+    s.phase = 'overall';
+  } else if (s.phase === 'overall') {
+    if (s.tp < TPS.length - 1) {
+      s.tp++; s.sc = 0; s.step = 0; s.phase = 'subcat';
+      if (s.tp > maxTP) maxTP = s.tp;
+    } else {
+      buildExport();
+      showScreen("screen-export");
+      return;
+    }
+  }
+  renderView();
+}
+
+function goBack() {
+  saveAnswer();
+  if (s.phase === 'overall') {
+    s.phase = 'rating';
+  } else if (s.phase === 'rating') {
+    s.phase = 'subcat'; s.sc = TPS[s.tp].subcats.length - 1; s.step = 1;
+  } else {
+    if (s.step > 0) { s.step--; }
+    else if (s.sc > 0) { s.sc--; s.step = 1; }
+    else if (s.tp > 0) {
+      s.tp--; s.sc = TPS[s.tp].subcats.length - 1; s.step = 1; s.phase = 'overall';
+    }
+  }
+  renderView();
+}
+
+function jumpToTP(i) {
+  if (i === s.tp) return;
+  saveAnswer();
+  // Save exact current position so Return brings them back precisely
+  savedPosition = { tp: s.tp, sc: s.sc, step: s.step, phase: s.phase };
+  s.tp = i; s.sc = 0; s.step = 0; s.phase = 'subcat';
+  renderView();
+}
+
+function returnToCurrent() {
+  saveAnswer();
+  if (savedPosition) {
+    s.tp = savedPosition.tp;
+    s.sc = savedPosition.sc;
+    s.step = savedPosition.step;
+    s.phase = savedPosition.phase;
+    savedPosition = null;
+  } else {
+    s.tp = maxTP; s.sc = 0; s.step = 0; s.phase = 'subcat';
+  }
+  renderView();
+}
+
+// ═══════════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════════
+function renderSidebar() {
+  const nav = document.getElementById("tp-nav");
+  nav.innerHTML = "";
+  const pct = Math.round((s.tp / TPS.length) * 100);
+  document.getElementById("sp-fill").style.width = pct + "%";
+  document.getElementById("sp-pct").textContent = pct + "% Complete";
+  TPS.forEach((tp, i) => {
+    const isReviewing = i < maxTP && i === s.tp;
+    const isDone = i < s.tp || (i === s.tp && i < maxTP);
+    const isCurrent = i === s.tp && i === maxTP;
+    let cls = "tp-item";
+    if (isCurrent) cls += " tp-current";
+    else if (isReviewing) cls += " tp-done tp-reviewing";
+    else if (i < maxTP) cls += " tp-done";
+    else if (isDone) cls += " tp-done";
+
+    const div = document.createElement("div");
+    div.className = cls;
+
+    // Make completed TPs clickable
+    if (i < maxTP && i !== s.tp) {
+      div.onclick = () => jumpToTP(i);
+      div.title = "Click to review this touchpoint";
+    }
+
+    let sub = "";
+    if (i === s.tp) {
+      if (isReviewing) sub = `<p class="tp-subprog" style="color:var(--orange)">Reviewing — click to edit</p>`;
+      else if (s.phase==='subcat') sub = `<p class="tp-subprog">Area ${s.sc+1} of ${tp.subcats.length}</p>`;
+      else if (s.phase==='rating') sub = `<p class="tp-subprog">Rating this touchpoint</p>`;
+      else sub = `<p class="tp-subprog">Final commitment</p>`;
+    } else if (i < maxTP) {
+      sub = `<p class="tp-subprog" style="color:rgba(99,182,210,0.7);font-size:10px">Click to review</p>`;
+    }
+
+    const badge = (i < maxTP && i !== s.tp) ? "✓" : (i === s.tp && i < maxTP) ? "✎" : i < s.tp ? "✓" : i + 1;
+    div.innerHTML = `<div class="tp-badge">${badge}</div><div><div class="tp-item-name">${tp.title}</div>${sub}</div>`;
+    nav.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════
+// MAIN VIEW
+// ═══════════════════════════════════════
+function renderView() {
+  const tp = TPS[s.tp];
+  const a = answers[s.tp];
+  document.getElementById("tb-tp").textContent = `Touchpoint ${tp.id} of ${TPS.length}`;
+  document.getElementById("tb-title").textContent = tp.title;
+
+  // Subcat pills
+  const strip = document.getElementById("subcat-strip");
+  strip.innerHTML = "";
+  tp.subcats.forEach((sc, i) => {
+    const pill = document.createElement("span");
+    let cls = "sc-pill";
+    if (s.phase !== 'subcat') cls += " sc-done";
+    else if (i < s.sc) cls += " sc-done";
+    else if (i === s.sc) cls += " sc-active";
+    pill.className = cls;
+    pill.textContent = sc.name;
+    strip.appendChild(pill);
+  });
+
+  const qInput = document.getElementById("q-input");
+  const ratingSec = document.getElementById("rating-section");
+  const qHint = document.getElementById("q-hint");
+  const framingCard = document.getElementById("framing-card");
+  const areaCtx = document.getElementById("area-context");
+  const q3Sum = document.getElementById("q3-summary");
+  const q3Div = document.getElementById("q3-divider");
+  const overallIntro = document.getElementById("overall-q-intro");
+  const dots = document.getElementById("step-dots");
+
+  if (s.phase === 'subcat') {
+    const sc = tp.subcats[s.sc];
+
+    // Framing card: show on first question of each new area
+    framingCard.style.display = s.step === 0 ? "block" : "none";
+    document.getElementById("fc-q").textContent = tp.workshopQ;
+
+    // Area context (blue statement) — only on Question 2
+    if (s.step === 1) {
+      areaCtx.style.display = "block";
+      areaCtx.className = "area-context";
+      areaCtx.innerHTML = '<p class="ac-headline">' + sc.headline + '</p><p class="ac-body">' + sc.context + '</p>';
+    } else {
+      areaCtx.style.display = "none";
+    }
+
+    document.getElementById("qc-subcat-label").textContent = `Area ${s.sc+1} of ${tp.subcats.length}`;
+    document.getElementById("qc-area-title").textContent = sc.name;
+    document.getElementById("q-num").textContent = Q_LABELS[s.step];
+
+    if (s.step === 0) {
+      document.getElementById("q-text").textContent = sc.q1;
+      qHint.style.display = "none";
+      qInput.value = a.subcats[s.sc].q1 || "";
+      qInput.placeholder = Q1_PLACEHOLDER;
+    } else {
+      document.getElementById("q-text").textContent = Q2_TEXT;
+      qHint.textContent = sc.q2hint;
+      qHint.style.display = "block";
+      qInput.value = a.subcats[s.sc].q2 || "";
+      qInput.placeholder = Q2_PLACEHOLDER;
+    }
+
+    qInput.style.display = "block";
+    ratingSec.style.display = "none";
+    q3Sum.style.display = "none";
+    q3Div.style.display = "none";
+    overallIntro.style.display = "none";
+
+    // Step dots: 2 dots
+    dots.innerHTML = "";
+    [0,1].forEach(i => {
+      const d = document.createElement("div");
+      d.className = "sd" + (i===s.step?" sd-active":i<s.step?" sd-done":"");
+      dots.appendChild(d);
+    });
+    document.getElementById("tb-sub-lbl").textContent = `${sc.name} · Q${s.step+1}/2`;
+    setTimeout(() => qInput.focus(), 40);
+
+  } else if (s.phase === 'rating') {
+    framingCard.style.display = "none";
+    areaCtx.style.display = "block";
+    areaCtx.className = "tp-summary-box";
+    areaCtx.innerHTML = tp.summary;
+    document.getElementById("qc-subcat-label").textContent = "Overall Self-Rating";
+    document.getElementById("qc-area-title").textContent = `How would you rate your leadership in ${tp.title}?`;
+    document.getElementById("q-num").textContent = "Self-Assessment";
+    document.getElementById("q-text").textContent = "";
+    qHint.style.display = "none";
+    qInput.style.display = "none";
+    ratingSec.style.display = "block";
+    q3Sum.style.display = "none";
+    q3Div.style.display = "none";
+    overallIntro.style.display = "none";
+    document.querySelectorAll(".r-btn").forEach(b => b.classList.remove("r-sel"));
+    if (a.rating) document.querySelector(`[data-r="${a.rating}"]`)?.classList.add("r-sel");
+    dots.innerHTML = "";
+    document.getElementById("tb-sub-lbl").textContent = "Rate this touchpoint";
+
+  } else { // overall
+    framingCard.style.display = "none";
+    areaCtx.style.display = "none";
+    areaCtx.className = "area-context";
+    document.getElementById("qc-subcat-label").textContent = "Final Reflection";
+    document.getElementById("qc-area-title").textContent = tp.title;
+    document.getElementById("q-num").textContent = "One Commitment";
+    document.getElementById("q-text").textContent = "Looking across all four areas — what is the single highest-leverage change you could make now, and why?";
+
+    // Build Q2 summary
+    q3Sum.style.display = "block";
+    q3Div.style.display = "block";
+    overallIntro.style.display = "block";
+    let html = `<p class="q3-sum-header">These are the things you said you'd change in this touchpoint: <span>Use these to find your highest-leverage commitment.</span></p>`;
+    tp.subcats.forEach((sc, i) => {
+      const val = a.subcats[i].q2;
+      html += `<div class="q3-item">
+        <div class="q3-item-num">${i+1}</div>
+        <div>
+          <p class="q3-area-name">${sc.name}</p>
+          <p class="q3-answer ${val?'':'empty'}">${val || "Not answered"}</p>
+        </div>
+      </div>`;
+    });
+    q3Sum.innerHTML = html;
+
+    qHint.textContent = "Don't just repeat one of the four — synthesize. Which commitment, if acted on consistently, would create the most ripple effect across the others? Or is there a pattern across all four pointing to one root behavior that, if changed, would shift everything?";
+    qHint.style.display = "block";
+    qInput.style.display = "block";
+    qInput.placeholder = "The single highest-leverage change I could make, and why it matters most...";
+    qInput.value = a.overallChange || "";
+    ratingSec.style.display = "none";
+    dots.innerHTML = "";
+    document.getElementById("tb-sub-lbl").textContent = "Overall commitment";
+    setTimeout(() => qInput.focus(), 40);
+  }
+
+  // Button labels
+  const isLastTP = s.tp === TPS.length - 1;
+  let nextTxt;
+  if (s.phase === 'subcat') {
+    const lastStep = s.step === 1, lastSC = s.sc === tp.subcats.length - 1;
+    nextTxt = lastStep && lastSC ? "Rate This Touchpoint" : lastStep ? "Next Area" : "Next";
+  } else if (s.phase === 'rating') {
+    nextTxt = "Almost Done";
+  } else {
+    nextTxt = isLastTP ? "View My Leadership Map" : "Next Touchpoint";
+  }
+  document.getElementById("btn-next-txt").textContent = nextTxt;
+  document.getElementById("btn-back").style.visibility =
+    (s.tp===0 && s.sc===0 && s.step===0 && s.phase==='subcat') ? "hidden" : "visible";
+  document.getElementById("btn-next").disabled = (s.phase==='rating' && !a.rating);
+
+  // Return button — only visible when reviewing a past touchpoint
+  const returnBtn = document.getElementById("btn-return");
+  if (s.tp < maxTP) {
+    returnBtn.style.display = "inline-flex";
+    const dest = savedPosition ? TPS[savedPosition.tp].title : `Touchpoint ${maxTP + 1}`;
+    returnBtn.textContent = `↩ Return to ${dest}`;
+  } else {
+    returnBtn.style.display = "none";
+  }
+
+  renderSidebar();
+}
+
+function setRating(r) {
+  answers[s.tp].rating = r;
+  document.querySelectorAll(".r-btn").forEach(b => b.classList.remove("r-sel"));
+  document.querySelector(`[data-r="${r}"]`).classList.add("r-sel");
+  document.getElementById("btn-next").disabled = false;
+}
+
+// ═══════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════
+function buildExport() {
+  const grid = document.getElementById("map-grid");
+  grid.innerHTML = "";
+  TPS.forEach((tp, i) => {
+    const a = answers[i];
+    const rCls = a.rating ? `rb-${a.rating.toLowerCase()}` : "rb-none";
+    const rows = tp.subcats.map((sc, si) => {
+      const sa = a.subcats[si];
+      const v = (key) => sa[key]
+        ? `<p class="mc-q-val">${esc(sa[key])}</p>`
+        : `<p class="mc-q-val empty">Not answered</p>`;
+      return `<div class="mc-row">
+        <div class="mc-sc-name">${esc(sc.name)}</div>
+        <div><p class="mc-q-label">What I Actually Do</p>${v("q1")}</div>
+        <div><p class="mc-q-label">One Change</p>${v("q2")}</div>
+      </div>`;
+    }).join("");
+    const commit = a.overallChange
+      ? `<p class="mc-commit-val">${esc(a.overallChange)}</p>`
+      : `<p class="mc-commit-val empty">None recorded</p>`;
+    const card = document.createElement("div");
+    card.className = "map-card";
+    card.innerHTML = `
+      <div class="mc-header">
+        <div><p class="mc-tp-num">Touchpoint ${tp.id}</p><p class="mc-title">${tp.title}</p></div>
+        <span class="r-badge ${rCls}">${a.rating||"Not rated"}</span>
+      </div>
+      <div class="mc-rows">${rows}</div>
+      <div class="mc-footer">
+        <span class="mc-commit-lbl">Highest-Leverage Commitment</span>${commit}
+      </div>`;
+    grid.appendChild(card);
+  });
+
+  // Coaching prompt
+  let p = `LEADERSHIP REFLECTION & COACHING PROMPT\n${"═".repeat(54)}\n\n`;
+  p += `ABOUT THIS ASSESSMENT\n${"─".repeat(54)}\n`;
+  p += `This is my completed Employee Experience Map — a structured leadership self-assessment built around 10 employee lifecycle touchpoints. Each touchpoint contains four focus areas. For each area I was given a leadership lens (a framing statement and context about what the area measures), then asked to describe what I actually do and identify one specific thing I would change. After all four areas, I named my single highest-leverage commitment for that touchpoint and rated myself overall.\n\n`;
+  p += `Use this full context — including the leadership lenses and questions — to evaluate the quality, honesty, and depth of my responses. Do not treat the answers in isolation. Assess them against what each area is actually measuring.\n\n`;
+  p += `${"═".repeat(54)}\nMY COMPLETED EMPLOYEE EXPERIENCE MAP\n${"═".repeat(54)}\n`;
+  TPS.forEach((tp, i) => {
+    const a = answers[i];
+    p += `\n${"─".repeat(54)}\nTOUCHPOINT ${tp.id}: ${tp.title.toUpperCase()}\nOverall Self-Rating: ${a.rating||"Not completed"}\n${"─".repeat(54)}\n`;
+    p += `\nTOUCHPOINT OVERVIEW:\n${tp.summary}\n`;
+    tp.subcats.forEach((sc, si) => {
+      const sa = a.subcats[si];
+      p += `\n  ── Area ${si+1}: ${sc.name} ──\n`;
+      p += `  Leadership lens: "${sc.headline}"\n`;
+      p += `  What this area measures: ${sc.context}\n\n`;
+      p += `  Question asked: "${sc.q1}"\n`;
+      p += `  My response: ${sa.q1||"(Not answered)"}\n\n`;
+      p += `  What I would change: ${sa.q2||"(Not answered)"}\n`;
+    });
+    p += `\n  Highest-Leverage Overall Commitment:\n  ${a.overallChange||"(Not answered)"}\n`;
+  });
+  p += `\n${"═".repeat(54)}\nCOACHING REQUEST\n${"═".repeat(54)}\n\nI want you to analyze my responses like an executive leadership coach focused on employee experience, culture, trust, accountability, emotional intelligence, and operational leadership.\n\nDo NOT give generic encouragement or leadership clichés. Instead, provide direct, pattern-based feedback. Analyze my map and provide:\n\n1. MY BIGGEST LEADERSHIP BLIND SPOTS\nIdentify the top 2–3 leadership gaps or behaviors creating the most negative impact across my employee experience map. Focus on recurring patterns, not isolated incidents. Explain WHY these patterns matter operationally and emotionally.\n\n2. SYSTEMIC LEADERSHIP THEMES\nIdentify any themes showing up repeatedly across multiple touchpoints or phases. Tell me what these patterns are likely teaching employees over time.\n\n3. MY LEADERSHIP STRENGTHS\nIdentify 2–3 genuine leadership strengths reflected in my positive touchpoints. Do not give shallow praise. Focus on strengths that meaningfully improve employee trust, engagement, retention, accountability, or culture. Also explain how I can intentionally scale or reinforce these strengths across my team.\n\n4. MY HIGHEST-RISK TOUCH POINTS\nIdentify the 3 touchpoints most likely to create: disengagement, turnover, resentment, burnout, poor morale, low accountability, or trust breakdowns if left unaddressed.\nExplain the operational risk of each one in a property management environment.\n\n5. MY 30-DAY LEADERSHIP COMMITMENTS\nGive me 3 specific behavioral actions I should implement in the next 30 days. These must be observable leadership behaviors — not vague mindset advice.\n\nBad example: "Communicate better."\nGood example: "Hold a 15-minute weekly check-in with each direct report where the first 5 minutes are about workload, stress, and support needs before discussing operations."\n\nThe actions should be realistic for a busy manager leading leasing, maintenance, and housekeeping teams.\n\n6. MY LEADERSHIP REALITY CHECK\nBased on everything in my map, answer this directly: "If my team described what it feels like to work under my leadership today, what would they honestly say?" Be candid. I want insight, not validation.`;
+  document.getElementById("coaching-box").textContent = p;
+  window._promptText = p;
+}
+
+function esc(s) {
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
+}
+
+function copyPrompt() {
+  const t = window._promptText;
+  if (!t) return;
+  navigator.clipboard.writeText(t).then(() => {
+    document.querySelectorAll(".btn-copy-inline,.btn-copy-h").forEach(b => {
+      const orig = b.textContent; b.textContent = "✓ Copied!";
+      setTimeout(() => b.textContent = orig, 2200);
+    });
+  }).catch(() => {
+    const ta = document.createElement("textarea");
+    ta.value = t; ta.style.cssText = "position:fixed;opacity:0";
+    document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); document.body.removeChild(ta);
+  });
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && e.ctrlKey) {
+    const btn = document.getElementById("btn-next");
+    if (btn && !btn.disabled && document.getElementById("screen-workshop").classList.contains("active")) goNext();
+  }
+});
+</script>
+</body>
+</html>
